@@ -9,51 +9,54 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Tuple;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 public class CategoryServiceImpl implements CategoryService {
-
     private CategoryDao categoryDao = new CategoryDaoImpl();
+    private Jedis jedis = JedisUtil.getJedis();
 
+    /**
+     * 用缓存优化后的service
+     * @return
+     */
     @Override
     public List<Category> findAll() {
-        //1.从redis中查询
-        //1.1获取jedis客户端
-        Jedis jedis = JedisUtil.getJedis();
-        //1.2可使用sortedset排序查询
-        //Set<String> categorys = jedis.zrange("category", 0, -1);
-        //1.3查询sortedset中的分数(cid)和值(cname)
-        Set<Tuple> categorys = jedis.zrangeWithScores("category", 0, -1);
 
-        List<Category> cs = null;
-        //2.判断查询的集合是否为空
-        if (categorys == null || categorys.size() == 0) {
+        //再 service 层加redis的访问
+        //首先访问 redis 看是否有"category" 为key的排序集合数据
+//        jedis.auth("foobar");
+        //Set<String> categories =  jedis.zrange("category",0,-1);
+        Set<Tuple> categories =  null;
+        try{
+            categories = jedis.zrangeWithScores("category", 0 , -1);
+        }catch (Exception e){
+            e.printStackTrace();
+            jedis.resetState();
+        }
 
-            System.out.println("从数据库查询....");
-            //3.如果为空,需要从数据库查询,在将数据存入redis
-            //3.1 从数据库查询
-            cs = categoryDao.findAll();
-            //3.2 将集合数据存储到redis中的 category的key
-            for (int i = 0; i < cs.size(); i++) {
-
-                jedis.zadd("category", cs.get(i).getCid(), cs.get(i).getCname());
+        List<Category>  categoriesList = null;
+        if(categories == null || categories.size() == 0){
+            //第一次访问，需要去数据库取出数据
+            System.out.println("从数据库查询");
+            categoriesList = categoryDao.findAll();
+            //数据库dao层查询结果返回后 ，把查询结果存储到redis中去
+            for (Category category : categoriesList) {
+                jedis.zadd("category", category.getCid(),category.getCname());
             }
-        } else {
-            System.out.println("从redis中查询.....");
 
-            //4.如果不为空,将set的数据存入list
-            cs = new ArrayList<Category>();
-            for (Tuple tuple : categorys) {
-                Category category = new Category();
-                category.setCname(tuple.getElement());
-                category.setCid((int)tuple.getScore());
-                cs.add(category);
-
+        }else{
+            System.out.println("从缓存里查询");
+            //如果缓存里面有数据,把数据封装的List<Category>中去
+            categoriesList  = new LinkedList<>();
+            for (Tuple s : categories) {
+              //  System.out.println(s);
+                categoriesList.add(new Category( (int)s.getScore(),s.getElement()));
+               // System.out.println(categoriesList.toString());
             }
         }
 
-
-        return cs;
+        return categoriesList;
     }
 }

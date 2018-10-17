@@ -23,7 +23,7 @@ create table tab_category
    cname                varchar(100) not null,
    primary key (cid),
    unique key AK_nq_categoryname (cname)
-);
+)default charset=utf8;
 
 /*==============================================================*/
 /* Table: tab_favorite                                          */
@@ -34,7 +34,7 @@ create table tab_favorite
    date                 date not null,
    uid                  int not null,
    primary key (rid, uid)
-);
+)default charset=utf8;
 
 /*==============================================================*/
 /* Table: tab_route                                             */
@@ -55,7 +55,7 @@ create table tab_route
    sourceId             varchar(50),
    primary key (rid),
    unique key AK_nq_sourceId (sourceId)
-);
+)default charset=utf8;
 
 /*==============================================================*/
 /* Table: tab_route_img                                         */
@@ -67,7 +67,7 @@ create table tab_route_img
    bigPic               varchar(200) not null,
    smallPic             varchar(200),
    primary key (rgid)
-);
+)default charset=utf8;
 
 /*==============================================================*/
 /* Table: tab_seller                                            */
@@ -80,7 +80,7 @@ create table tab_seller
    address              varchar(200),
    primary key (sid),
    unique key AK_Key_2 (sname)
-);
+)default charset=utf8;
 
 /*==============================================================*/
 /* Table: tab_user                                              */
@@ -101,7 +101,7 @@ create table tab_user
    primary key (uid),
    unique key AK_nq_username (username),
    unique key AK_nq_code (code)
-);
+)default charset=utf8;
 
 alter table tab_favorite add constraint FK_route_favorite foreign key (rid)
       references tab_route (rid) on delete restrict on update restrict;

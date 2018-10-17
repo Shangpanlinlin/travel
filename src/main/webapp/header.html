@@ -1,4 +1,5 @@
 <!-- 头部 start -->
+<script src="js/getParameter.js"></script>
 <script>
     $(function () {
         //查询用户信息
@@ -14,20 +15,23 @@
             //[{cid:1,cname:国内游},{},{}]
             var lis = '<li class="nav-active"><a href="index.html">首页</a></li>';
             //遍历数组,拼接字符串(<li>)
+           // alert(data)
             for (var i = 0; i < data.length; i++) {
                 var li = '<li><a href="route_list.html?cid='+data[i].cid+'">'+data[i].cname+'</a></li>';
 
                 lis += li;
                 
             }
-            
-
             //拼接收藏排行榜的li,<li><a href="favoriterank.html">收藏排行榜</a></li>
-            
             lis+= '<li><a href="favoriterank.html">收藏排行榜</a></li>';
-
             //将lis字符串，设置到ul的html内容中
             $("#category").html(lis);
+        });
+
+        $("#search-button").click(function(){
+             var rname = $("#search_input").val();
+             var cid = getParameter("cid");
+             location.href = "http://localhost:8080/travel/route_list.html?cid=" + cid + "&rname=" + rname;
         });
 
     });
@@ -49,7 +53,7 @@
             	
                 <span id="span_username"></span>
                 <a href="myfavorite.html" class="collection">我的收藏</a>
-                <a href="javascript:location.href='exitServlet';">退出</a>
+                <a href="javascript:location.href='user/logout';">退出</a>
             </div>
         </div>
         <div class="header_wrap">
@@ -58,8 +62,8 @@
                     <a href="/"><img src="images/logo.jpg" alt=""></a>
                 </div>
                 <div class="search">
-                    <input name="" type="text" placeholder="请输入路线名称" class="search_input" autocomplete="off">
-                    <a href="javascript:;" class="search-button">搜索</a>
+                    <input name="" type="text" placeholder="请输入路线名称" class="search_input" id="search_input" autocomplete="off">
+                    <a href="javascript:;" class="search-button" id="search-button">搜索</a>
                 </div>
                 <div class="hottel">
                     <div class="hot_pic">

@@ -10,11 +10,12 @@ import java.util.List;
 
 public class CategoryDaoImpl implements CategoryDao {
 
-    private JdbcTemplate template = new JdbcTemplate(JDBCUtils.getDataSource());
+    private JdbcTemplate jdbcTemplate= new JdbcTemplate(JDBCUtils.getDataSource());
 
     @Override
     public List<Category> findAll() {
-        String sql = "select * from tab_category ";
-        return template.query(sql,new BeanPropertyRowMapper<Category>(Category.class));
+        String sql = "select * from tab_category";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<Category>(Category.class));
     }
+
 }

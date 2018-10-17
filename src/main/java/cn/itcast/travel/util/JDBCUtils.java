@@ -2,6 +2,7 @@ package cn.itcast.travel.util;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 
+import javax.servlet.ServletOutputStream;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;

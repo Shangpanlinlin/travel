@@ -1,16 +1,12 @@
 package cn.itcast.travel.service;
 
 import cn.itcast.travel.domain.User;
+import cn.itcast.travel.status.ActiveResult;
 
 public interface UserService {
-    /**
-     * 注册用户
-     * @param user
-     * @return
-     */
-    boolean regist(User user);
+    public Boolean regist(User user);
 
-    boolean active(String code);
+    public ActiveResult activeUser(String code);
 
     User login(User user);
 }

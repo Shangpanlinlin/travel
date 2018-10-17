@@ -3,23 +3,13 @@ package cn.itcast.travel.dao;
 import cn.itcast.travel.domain.User;
 
 public interface UserDao {
+    int updateUser(User user);
 
-    /**
-     * 根据用户名查询用户信息
-     * @param username
-     * @return
-     */
-    public User findByUsername(String username);
+    public User findUserByUsername(String username);
 
-    /**
-     * 用户保存
-     * @param user
-     */
-    public void save(User user);
+    boolean save(User user);
 
-    User findByCode(String code);
+    User findUserByCode(String code);
 
-    void updateStatus(User user);
-
-    User findByUsernameAndPassword(String username, String password);
+    User findUserByUsernameAndPassword(User user);
 }
